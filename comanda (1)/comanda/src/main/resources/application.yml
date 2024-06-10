@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pdv_software?useTimezone=true&serverTimezone=UTC
+    username: root
+    password: Setee*77
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+      show-sql: false
