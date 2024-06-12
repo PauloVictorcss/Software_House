@@ -7,23 +7,25 @@ import java.util.List;
 
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "pedido")
-public class Pedido {
+@Table(name = "comanda")
+public class Comanda {
 
+    //Não esquecer de retornar a comanda no abrir mesa
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     private Mesa mesa;
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comanda", cascade = CascadeType.ALL)
     private List<ItemPedido> itens;
     private Date dataHora;
+    private double subTotal = 0;
 
-    public Pedido(Mesa mesa){
+    public Comanda(Mesa mesa){
         this.mesa = mesa;
 
     }
 
-    public Pedido() {
+    public Comanda() {
     }
 
     public Long getId() {
@@ -43,6 +45,7 @@ public class Pedido {
     }
 
     public List<ItemPedido> getItens() {
+
         return itens;
     }
 
@@ -57,4 +60,5 @@ public class Pedido {
     public void setDataHora(Date dataHora) {
         this.dataHora = dataHora;
     }
+
 }
