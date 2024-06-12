@@ -1,5 +1,6 @@
 package br.com.softwareGrup.comanda.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 
@@ -17,9 +18,10 @@ public class ItemPedido {
 
     private int quantidade;
 
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "pedido_id", nullable = false)
-    private Pedido pedido;
+    @JoinColumn(name = "comanda_id", nullable = false)
+    private Comanda comanda;
 
     public Long getId() {
         return id;
@@ -45,11 +47,11 @@ public class ItemPedido {
         this.quantidade = quantidade;
     }
 
-    public Pedido getPedido() {
-        return pedido;
+    public Comanda getComanda() {
+        return comanda;
     }
 
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
+    public void setComanda(Comanda comanda) {
+        this.comanda = comanda;
     }
 }
