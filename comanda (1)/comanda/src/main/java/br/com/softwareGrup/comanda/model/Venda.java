@@ -1,9 +1,9 @@
 package br.com.softwareGrup.comanda.model;
 
 import br.com.softwareGrup.comanda.enuns.FormaPagamento;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
-
 import java.util.Date;
 
 @EqualsAndHashCode
@@ -15,11 +15,12 @@ public class Venda {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     private Mesa mesa;
 
     @ManyToOne
-    private Pedido pedido;
+    private Comanda comanda;
 
     private double subtotal;
     private FormaPagamento formaPagamento;
@@ -41,12 +42,12 @@ public class Venda {
         this.mesa = mesa;
     }
 
-    public Pedido getPedido() {
-        return pedido;
+    public Comanda getComanda() {
+        return comanda;
     }
 
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
+    public void setComanda(Comanda comanda) {
+        this.comanda = comanda;
     }
 
     public double getSubtotal() {
