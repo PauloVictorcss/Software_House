@@ -1,40 +1,57 @@
 package br.com.softwareGrup.comanda.controllers;
-
 import br.com.softwareGrup.comanda.model.Venda;
-import br.com.softwareGrup.comanda.repositories.VendaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import br.com.softwareGrup.comanda.servicies.VendaServicies;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import javax.annotation.PostConstruct;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
-@RestController
-@RequestMapping("/relatorios")
-public class ControllerRelatorio {
+@Named
+@ViewScoped
+public class ControllerRelatorio implements Serializable {
 
-    @Autowired
-    VendaRepository vendaRepository;
+    @Inject
+    private VendaServicies vendaServicies;
 
-    @GetMapping
-    public List<Venda> relatorioVendaPorData(
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") String dataInicio,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") String dataFim
-    ) throws ParseException {
+    private LocalDate dataInicio;
+    private LocalDate dataFim;
+    private List<Venda> vendas;
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    @PostConstruct
+    public void init() {
+        // Inicializações necessárias, se houver
+    }
 
-        Date inicio = formatter.parse(dataInicio);
-        Date fim = formatter.parse(dataFim);
+    public void gerarRelatorioVenda() {
+        vendas = vendaServicies.relatorioVenda(dataInicio, dataFim);
+    }
 
-        List<Venda> vendas =  vendaRepository.findByDataHoraPagamentoBetween(inicio, fim);
+    // Getters e Setters
+    public LocalDate getDataInicio() {
+        return dataInicio;
+    }
+
+    public void setDataInicio(LocalDate dataInicio) {
+        this.dataInicio = dataInicio;
+    }
+
+    public LocalDate getDataFim() {
+        return dataFim;
+    }
+
+    public void setDataFim(LocalDate dataFim) {
+        this.dataFim = dataFim;
+    }
+
+    public List<Venda> getVendas() {
         return vendas;
+    }
 
+    public void setVendas(List<Venda> vendas) {
+        this.vendas = vendas;
     }
 }
