@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 
 @EqualsAndHashCode(of = "id")
@@ -22,18 +21,18 @@ public class Mesa implements Serializable {
     private int numero;
     @Column(name = "numero_ocupante")
     private int numeroOcupante;
-    @Column(name = "hora_abertura")
-    private LocalDateTime horaAbertura;
-    @Column(name = "hora_fechamento")
-    private LocalDateTime horaFechamento;
+    @Column(name = "data_hora_abertura")
+    private LocalDateTime dataHoraAbertura;
+    @Column(name = "data_hora_fechamento")
+    private LocalDateTime dataHoraFechamento;
 
 
-    public LocalDateTime getHoraFechamento() {
-        return horaFechamento;
+    public LocalDateTime getDataHoraFechamento() {
+        return dataHoraFechamento;
     }
 
-    public void setHoraFechamento(LocalDateTime horaFechamento) {
-        this.horaFechamento = horaFechamento;
+    public void setDataHoraFechamento(LocalDateTime dataHoraFechamento) {
+        this.dataHoraFechamento = dataHoraFechamento;
     }
 
     public Long getId() {
@@ -61,12 +60,12 @@ public class Mesa implements Serializable {
     }
 
 
-    public LocalDateTime getHoraAbertura() {
-        return horaAbertura;
+    public LocalDateTime getDataHoraAbertura() {
+        return dataHoraAbertura;
     }
 
-    public void setHoraAbertura(LocalDateTime horaAbertura) {
-        this.horaAbertura = horaAbertura;
+    public void setDataHoraAbertura(LocalDateTime dataHoraAbertura) {
+        this.dataHoraAbertura = dataHoraAbertura;
     }
 
     public int getNumero() {
@@ -76,9 +75,6 @@ public class Mesa implements Serializable {
     public void setNumero(int numero) {
         this.numero = numero;
     }
-
-
-
 
 
 }
