@@ -13,8 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -38,8 +39,8 @@ public class MesaServicies {
         Mesa mesaNoBanco = repository.findById(mesa.getId()).orElseThrow(() -> new EntityNotFoundException("Mesa não existe"));
         if(mesaNoBanco.getStatus().equals(StatusMesa.LIVRE)) {
             mesaNoBanco.setNumeroOcupante(mesa.getNumeroOcupante());
-            mesaNoBanco.setHoraAbertura(LocalDateTime.now());
-            mesaNoBanco.setHoraFechamento(null);
+            mesaNoBanco.setDataHoraAbertura(LocalDateTime.now());
+            mesaNoBanco.setDataHoraFechamento(null);
             mesaNoBanco.setStatus(StatusMesa.OCUPADA);
             repository.save(mesaNoBanco);
             return produtoRepository.findAll();
@@ -50,7 +51,7 @@ public class MesaServicies {
 
     public Mesa AguardarPagamento(Mesa mesa) {
         Mesa mesaNoBanco = repository.findById(mesa.getId()).orElseThrow(() -> new EntityNotFoundException("Mesa não existe"));
-        if(mesaNoBanco.getHoraAbertura() == null){
+        if(mesaNoBanco.getDataHoraAbertura() == null){
             throw new IsNotPossibleToDoException("Se a mesa não foi aberta não é possível aguardar pagamento");
         }else {
             mesaNoBanco.setStatus(StatusMesa.AGUARDANDO_PAGAMENTO);
@@ -61,23 +62,28 @@ public class MesaServicies {
     @Transactional
     public Venda fechaMesa(Mesa mesa, FormaPagamento formaPagamento) {
         Mesa mesaNoBanco = repository.findById(mesa.getId()).orElseThrow(() -> new EntityNotFoundException("Mesa não existe"));
-        if(mesaNoBanco.getHoraAbertura() == null){
+        if(mesaNoBanco.getDataHoraAbertura() == null){
             throw new IsNotPossibleToDoException("Não é possível fechar mesa sem antes ter abrido");
         } else {
 
             Comanda comada = comandaRepository.findByMesa(mesa).orElse(null);
             List<ItemPedido> itens = comada.getItens();
             double subTotal = itens.stream().mapToDouble(item -> item.getProduto().getPreco() * item.getQuantidade()).sum();
+            double porcentagemGarcon = 0.10 * subTotal;
+            double subTotalIncluindoPorcentagem = subTotal + porcentagemGarcon;
+
 
             Venda venda = new Venda();
             venda.setMesa(mesaNoBanco);
             venda.setComanda(comada);
-            venda.setSubtotal(subTotal);
-            venda.setDataHoraPagamento(new Date());
+            venda.setDataPagamento(LocalDate.now());
             venda.setFormaPagamento(formaPagamento);
+            venda.setValorItensPedidos(subTotal);
+            venda.setDescontoPocentagemGarcon(subTotalIncluindoPorcentagem);
+            venda.setSubtotal(subTotalIncluindoPorcentagem);
 
             mesaNoBanco.setNumeroOcupante(mesa.getNumeroOcupante());
-            mesaNoBanco.setHoraFechamento(LocalDateTime.now());
+            mesaNoBanco.setDataHoraFechamento(LocalDateTime.now());
             mesaNoBanco.setStatus(StatusMesa.LIVRE);
 
             repository.save(mesaNoBanco);
