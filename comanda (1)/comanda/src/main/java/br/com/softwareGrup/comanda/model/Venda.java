@@ -4,7 +4,8 @@ import br.com.softwareGrup.comanda.enuns.FormaPagamento;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
-import java.util.Date;
+
+import java.time.LocalDate;
 
 @EqualsAndHashCode
 @Entity
@@ -14,17 +15,32 @@ public class Venda {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @JsonIgnore
     @ManyToOne
     private Mesa mesa;
-
     @ManyToOne
     private Comanda comanda;
-
-    private double subtotal;
     private FormaPagamento formaPagamento;
-    private Date dataHoraPagamento;
+    private LocalDate dataPagamento;
+    private double valorItensPedidos;
+    private double descontoPocentagemGarcon;
+    private double subtotal;
+
+    public double getValorItensPedidos() {
+        return valorItensPedidos;
+    }
+
+    public void setValorItensPedidos(double valorItensPedidos) {
+        this.valorItensPedidos = valorItensPedidos;
+    }
+
+    public double getDescontoPocentagemGarcon() {
+        return descontoPocentagemGarcon;
+    }
+
+    public void setDescontoPocentagemGarcon(double descontoPocentagemGarcon) {
+        this.descontoPocentagemGarcon = descontoPocentagemGarcon;
+    }
 
     public Long getId() {
         return id;
@@ -66,11 +82,11 @@ public class Venda {
         this.formaPagamento = formaPagamento;
     }
 
-    public Date getDataHoraPagamento() {
-        return dataHoraPagamento;
+    public LocalDate getDataPagamento() {
+        return dataPagamento;
     }
 
-    public void setDataHoraPagamento(Date dataHoraPagamento) {
-        this.dataHoraPagamento = dataHoraPagamento;
+    public void setDataPagamento(LocalDate dataPagamento) {
+        this.dataPagamento = dataPagamento;
     }
 }
