@@ -1,57 +1,50 @@
 package br.com.softwareGrup.comanda.controllers;
-import br.com.softwareGrup.comanda.model.Venda;
-import br.com.softwareGrup.comanda.servicies.VendaServicies;
 
-import javax.annotation.PostConstruct;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.Serializable;
+import br.com.softwareGrup.comanda.model.Venda;
+import br.com.softwareGrup.comanda.repositories.VendaRepository;
+import br.com.softwareGrup.comanda.servicies.VendaServicies;
+import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
-@Named
-@ViewScoped
-public class ControllerRelatorio implements Serializable {
+@RestController
+@RequestMapping("/relatorios")
+public class ControllerRelatorio {
 
-    @Inject
-    private VendaServicies vendaServicies;
+    @Autowired
+    VendaServicies vendaServicies;
+    @Autowired
+    VendaRepository vendaRepository;
 
-    private LocalDate dataInicio;
-    private LocalDate dataFim;
-    private List<Venda> vendas;
+    @GetMapping
+    public List<Venda> relatorioVendaPorData(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataInicio,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataFim
+    ) throws ParseException {
 
-    @PostConstruct
-    public void init() {
-        // Inicializações necessárias, se houver
-    }
-
-    public void gerarRelatorioVenda() {
-        vendas = vendaServicies.relatorioVenda(dataInicio, dataFim);
-    }
-
-    // Getters e Setters
-    public LocalDate getDataInicio() {
-        return dataInicio;
-    }
-
-    public void setDataInicio(LocalDate dataInicio) {
-        this.dataInicio = dataInicio;
-    }
-
-    public LocalDate getDataFim() {
-        return dataFim;
-    }
-
-    public void setDataFim(LocalDate dataFim) {
-        this.dataFim = dataFim;
-    }
-
-    public List<Venda> getVendas() {
+        List<Venda> vendas =  vendaServicies.relatorioVenda(dataInicio, dataFim);
         return vendas;
+
     }
 
-    public void setVendas(List<Venda> vendas) {
-        this.vendas = vendas;
+
+    @GetMapping("/mais/vendidos")
+    public List<Object[]> rankingProdutosMaisVendidos(@RequestParam("dataInicio") String dataInicio,
+                                                      @RequestParam("dataFim") String dataFim) {
+        LocalDate inicio = LocalDate.parse(dataInicio);
+        LocalDate fim = LocalDate.parse(dataFim);
+        return vendaRepository.rankingProdutosMaisVendidos(inicio, fim);
     }
 }
+
