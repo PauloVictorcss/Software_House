@@ -1,45 +1,35 @@
 package br.com.softwareGrup.comanda.controllers;
+
+import br.com.softwareGrup.comanda.model.Mesa;
 import br.com.softwareGrup.comanda.model.Produto;
 import br.com.softwareGrup.comanda.servicies.ProdutoServicies;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.Serializable;
 import java.util.List;
 
-@Named
-@ViewScoped
-public class ProdutoController implements Serializable {
+@RestController
+@RequestMapping("/produtos")
+public class ProdutoController {
 
-    @Inject
-    private ProdutoServicies servicies;
+    @Autowired
+    ProdutoServicies servicies;
 
-    private List<Produto> produtos;
-    private Produto novoProduto;
-
-    @PostConstruct
-    public void init() {
-        produtos = servicies.getProdutos();
-        novoProduto = new Produto();
-    }
-
-    public void criarProduto() {
-        servicies.CreateProduto(novoProduto);
-        produtos = servicies.getProdutos(); // Atualiza a lista de produtos
-        novoProduto = new Produto(); // Reseta o produto para um novo cadastro
-    }
-
+    //Não esquecer de jogar essa parte dentro da comanda que vai ser retornado no abrir mesa
+    @GetMapping
     public List<Produto> getProdutos() {
-        return produtos;
+        return servicies.getProdutos();
     }
 
-    public Produto getNovoProduto() {
-        return novoProduto;
+    @GetMapping("/categoria/{categoria}")
+    public List<Produto> getProdutosByCategoria(@PathVariable String categoria) {
+        return servicies.getProdutosByCategoria(categoria);
     }
 
-    public void setNovoProduto(Produto novoProduto) {
-        this.novoProduto = novoProduto;
+
+
+    @PostMapping
+    public Produto CreatProduto(@RequestBody Produto produto){
+        return servicies.CreateProduto(produto);
     }
 }
