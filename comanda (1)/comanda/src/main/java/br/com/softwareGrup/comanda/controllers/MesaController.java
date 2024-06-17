@@ -5,90 +5,43 @@ import br.com.softwareGrup.comanda.model.Mesa;
 import br.com.softwareGrup.comanda.model.Produto;
 import br.com.softwareGrup.comanda.model.Venda;
 import br.com.softwareGrup.comanda.servicies.MesaServicies;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.Serializable;
 import java.util.List;
 
-@Named
-@ViewScoped
-public class MesaController implements Serializable {
+@RestController
+@RequestMapping("/mesas")
+public class MesaController {
 
-    private static final long serialVersionUID = 1L;
+    @Autowired
+    MesaServicies mesaServicies;
 
-    @Inject
-    private MesaServicies mesaServicies;
-
-    private List<Mesa> mesas;
-    private Mesa mesa;
-    private FormaPagamento formaPagamento;
-    private List<Produto> produtos;
-    private Venda venda;
-
-    @PostConstruct
-    public void init() {
-        mesas = mesaServicies.getMesas();
-        mesa = new Mesa();
+    @GetMapping
+    public List<Mesa> getMapaMesas(){
+        return mesaServicies.getMesas();
     }
 
-    public void abrirMesa() {
-        produtos = mesaServicies.abrirMesa(mesa);
+    @PostMapping("/abrir")
+    public List<Produto> abrirMesa(@RequestBody Mesa mesa) {
+        return mesaServicies.abrirMesa(mesa);
     }
 
-    public void aguardarPagamento() {
-        mesa = mesaServicies.AguardarPagamento(mesa);
+    @PutMapping("/aguardar/{idMesa}")
+    public Mesa aguardarPagamento(@PathVariable Long idMesa) {
+        return mesaServicies.AguardarPagamento(idMesa);
     }
 
-    public void fecharMesa() {
-        venda = mesaServicies.fechaMesa(mesa, formaPagamento);
+
+    @PutMapping("/fechar/{idComanda}")
+    public Venda fecharMesa(@RequestBody Mesa mesa, @PathVariable Long idComanda, @RequestParam FormaPagamento formaPagamento) {
+        return mesaServicies.fechaMesa(mesa, idComanda, formaPagamento);
     }
 
-    public void populaMesa() {
+
+    @PostMapping("/popular")
+    public void populaMesa(@RequestBody Mesa mesa){
         mesaServicies.createMesa(mesa);
     }
 
-    // Getters and Setters
-
-    public List<Mesa> getMesas() {
-        return mesas;
-    }
-
-    public void setMesas(List<Mesa> mesas) {
-        this.mesas = mesas;
-    }
-
-    public Mesa getMesa() {
-        return mesa;
-    }
-
-    public void setMesa(Mesa mesa) {
-        this.mesa = mesa;
-    }
-
-    public FormaPagamento getFormaPagamento() {
-        return formaPagamento;
-    }
-
-    public void setFormaPagamento(FormaPagamento formaPagamento) {
-        this.formaPagamento = formaPagamento;
-    }
-
-    public List<Produto> getProdutos() {
-        return produtos;
-    }
-
-    public void setProdutos(List<Produto> produtos) {
-        this.produtos = produtos;
-    }
-
-    public Venda getVenda() {
-        return venda;
-    }
-
-    public void setVenda(Venda venda) {
-        this.venda = venda;
-    }
 }
