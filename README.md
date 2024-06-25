@@ -3,7 +3,7 @@
 Este é um sistema de bar e restaurante desenvolvido com Java e Spring Boot 3. O sistema gerencia mesas e comandas, permitindo a adição de pedidos, fechamento de mesas, e geração de relatórios de vendas.
 
 ## Funcionalidades
--**Visualizar Mesas**: Permite ver todas as mesas e os seus status
+- **Visualizar Mesas**: Permite ver todas as mesas e os seus status
 - **Abrir Mesa**: Permite abrir uma mesa e mudar seu status para "ocupado".
 - **Abrir Comanda**: Permite abrir uma comanda associada a uma mesa específica.
 - **Visualizar Cardápio**: Permite a visualização dos cardápios
